@@ -29,7 +29,7 @@ pipeline {
                 // timeout(time: 2, unit: 'MINUTES') {
                 //     waitForQualityGate abortPipeline: true
                 // }
-                bat 'echo Quality Gate'
+                waitForQualityGate abortPipeline: false, credentialsId: 'SonarToken'
             }
         }
         stage ('Deploy Backend') {
@@ -58,13 +58,13 @@ pipeline {
             steps {
                 dir('functional-test') {
                     git credentialsId: 'github_login', url: 'https://github.com/Victor-Pizzaia/tasks-functional-tests'
-                    // bat 'mvn test'
-                    bat 'echo mvn test'
+                    bat 'mvn test'
                 }
             }
         }
         stage ('Deploy Prod') {
             steps {
+                bat 'wsl'
                 bat 'docker-compose build'
                 bat 'docker-compose up -d'
             }

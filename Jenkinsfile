@@ -61,9 +61,7 @@ pipeline {
         }
         stage ('Deploy Prod') {
             steps {
-                bat 'wsl'
-                bat 'docker-compose build'
-                bat 'docker-compose up -d'
+                bat 'wsl docker-compose up -d'
             }
         }
     }

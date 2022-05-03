@@ -23,10 +23,17 @@ pipeline {
         }
         stage ('Quality Gate') {
             steps {
-                sleep(20)
-                timeout(time: 1, unit: 'MINUTES') {
+                withSonarQubeEnv('SONAR_LOCAL') {
+                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+                }
+                timeout(time: 2, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
+            }
+        }
+        stage ('Deploy Backend') {
+            steps {
+                deploy adapters: [tomcat8(credentialsId: 'TomcatLogin', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks-backend', war: 'target/tasks-backend.war'
             }
         }
     }
